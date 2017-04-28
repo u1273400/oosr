@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<project name="add" default="run" basedir="/web/stud/u1273400/src/java/sphinx">
+
+  <target name="clean">
+  <delete dir="build"/>
+  </target>
+
+  <target name="prepare" depends="clean">
+  <mkdir dir="src"/>
+  <mkdir dir="build"/>
+  </target>
+
+  <target name="compile" depends="prepare">
+  <javac srcdir="src" destdir="build" debug="on" optimize="on"/>  
+  </target>
+
+  <!--target name="run" depends="compile"-->
+  <target name="run">
+  <!--java fork="true" failonerror="yes" classname="Addition" classpath="build">  
+  <arg line=""/>
+  </java-->
+  <exec executable="java">
+    <arg value="-jar"/>
+    <arg value="demo.jar"/>
+    <!-- arg value="/web/stud/u1273400/src/cpp/kaldi/egs/mydigits/digits_audio/test/M1/M1d980.wav"/-->
+    <arg value="/web/stud/u1273400/src/data/digits/544731080047748982509633422090.wav"/>
+  </exec>
+  </target>
+
+</project>
