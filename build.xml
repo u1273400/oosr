@@ -1,30 +1,63 @@
 <?xml version="1.0"?>
 <project name="add" default="run" basedir="/web/stud/u1273400/src/java/sphinx">
 
+<property name="dir.src" value="demo"/>
+<property name="dir.build" value="tmpbuild"/>
+<property name="dir.jar" value="."/>
+<property name="dir.lib" value="lib"/>
+<property name="dir.ad0" value="/web/stud/u1273400/src/data/digits/"/>
+<property name="loc.aud0" value="/web/stud/u1273400/src/data/digits/544731080047748982509633422090.wav"/>
+<property name="loc.aud1" value="web/stud/u1273400/src/cpp/kaldi/egs/mydigits/digits_audio/test/M1/M1d980.wav"/>
+<property name="loc.logf" value="${basedir}/log.log"/>
+
+    <path id="project.class.path">
+    <!--pathelement location="lib/"/-->
+    <pathelement path="${dir.lib}/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar"/>
+    <pathelement path="${dir.lib}/sphinx4.jar"/>
+    <pathelement path="${dir.lib}/log4j.jar"/>
+  </path>
+
+  
   <target name="clean">
-  <delete dir="build"/>
+  <delete dir="${dir.build}"/>
   </target>
 
   <target name="prepare" depends="clean">
-  <mkdir dir="src"/>
-  <mkdir dir="build"/>
+   <mkdir dir="${dir.build}"/>
   </target>
 
   <target name="compile" depends="prepare">
-  <javac srcdir="src" destdir="build" debug="on" optimize="on"/>  
+  <javac srcdir="${dir.src}" destdir="${dir.build}" debug="on" optimize="on">  
+  	  <classpath refid="project.class.path"/>
+  </javac>
+  <copy todir="${dir.build}">
+  	<fileset dir="${dir.src}"/>
+  </copy>
   </target>
 
-  <!--target name="run" depends="compile"-->
-  <target name="run">
+  <target name="jar" depends="compile" description="Generates demo.jar file in to the 'jar' directory.">
+  <jar jarfile="${dir.jar}/demo.jar" basedir="${dir.build}">
+    <manifest>
+      <attribute name="Main-Class"
+            value="Transcriber2"/>
+       <attribute name="Class-Path"
+            value="./lib/log4j.jar ./lib/sphinx4.jar ./lib/WSJ_8gau_13dCep_16k_40mel_130Hz_6800Hz.jar"/>
+    </manifest>
+  </jar>
+  </target>
+
+  <target name="run" depends="jar">
   <!--java fork="true" failonerror="yes" classname="Addition" classpath="build">  
   <arg line=""/>
   </java-->
   <exec executable="java">
     <arg value="-jar"/>
     <arg value="demo.jar"/>
-    <!-- arg value="/web/stud/u1273400/src/cpp/kaldi/egs/mydigits/digits_audio/test/M1/M1d980.wav"/-->
-    <arg value="/web/stud/u1273400/src/data/digits/544731080047748982509633422090.wav"/>
+    <arg value="${dir.ad0}"/>
   </exec>
+  <exec executable="more">
+    <arg value="${loc.logf}"/>
+   </exec>
   </target>
 
 </project>
